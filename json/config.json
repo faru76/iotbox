@@ -1,0 +1,87 @@
+{
+    "gpio_type": {
+        "on_board_gpio": 2,
+        "io_expander_20": 0,
+        "io_expander_21": 1
+    },
+
+    "camera_config": [{
+        "ip_address": "192.168.10.103",
+        "status_gpio_type": 2,
+        "status_gpio_pin": 0,
+        "Demand": [{
+                "detect_loop": 1,
+                "count_loop": 3,
+                "gpio_type": 0,
+                "gpio_pin": 0,
+                "hold_time": 5000
+            },
+            {
+                "detect_loop": 2,
+                "count_loop": 4,
+                "gpio_type": 0,
+                "gpio_pin": 1,
+                "hold_time": 10000
+            }
+        ]
+    }, {
+        "ip_address": "192.168.10.104",
+        "status_gpio_type": 2,
+        "status_gpio_pin": 0,
+        "Demand": [{
+                "detect_loop": 1,
+                "count_loop": 3,
+                "gpio_type": 0,
+                "gpio_pin": 0,
+                "hold_time": 5000
+            },
+            {
+                "detect_loop": 2,
+                "count_loop": 4,
+                "gpio_type": 0,
+                "gpio_pin": 1,
+                "hold_time": 10000
+            }
+        ]
+    }],
+
+    "AC_in_config": [{
+            "phase": 1,
+            "red_gpio_pin": 0,
+            "green_gpio_pin": 1
+        },
+        {
+            "phase": 2,
+            "red_gpio_pin": 2,
+            "green_gpio_pin": 3
+        },
+        {
+            "phase": 3,
+            "red_gpio_pin": 4,
+            "green_gpio_pin": 5
+        },
+        {
+            "phase": 4,
+            "red_gpio_pin": 6,
+            "green_gpio_pin": 7
+        }
+    ],
+
+    "DC_in_config": [{
+            "push_button": 1,
+            "gpio_pin": 0
+        },
+        {
+            "push_button": 2,
+            "gpio_pin": 1
+        },
+        {
+            "push_button": 3,
+            "gpio_pin": 2
+        },
+        {
+            "push_button": 4,
+            "gpio_pin": 3
+        }
+    ]
+}

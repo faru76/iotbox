@@ -1,0 +1,56 @@
+@startuml
+actor "UPS" as UPS
+actor "DC input source" as DC
+actor "Junction Cameras" as JC
+actor "Traffic Lights" as TL
+actor "3rd party controller" as TC
+actor "3rd party software" as SW
+
+participant "ControlModule" as CM
+participant "CommModule" as COM
+participant "ACMonitoringModule" as AM
+participant "CameraModule" as CAM
+participant "DCInputModule" as DCM
+participant "UPSModule" as UM
+
+== Traffic Control Functionality ==
+CAM --> JC : IP address, Demand ID
+CAM <-- JC : Demand
+note left of CAM
+    - Communicates with cameras using LvRestful
+    - Parses JSON data with LvJSON
+end note
+CAM --> CM : Demand data 
+CM --> TC : GPIO signals (via optocoupler)
+note right of TC
+    - Receives GPIO signals (virtual loop demand)
+end note
+
+== DC Input Functionality ==
+DC --> DCM : Pedestrian button/Door sensor status
+DCM --> COM : Pedestrian button/Door sensor status
+COM --> SW : MQTT payload pedestrian button/door sensor status
+note left of COM
+    - example dcinput/pedestrian and dcinput/door as topic
+end note
+
+== AC Monitoring Functionality ==
+TL --> AM : AC input from traffic light
+note right of TL
+    - Monitors AC signal powering traffic lights after optocoupler.
+end note
+AM --> COM : Traffic light status
+COM --> SW : MQTT payload traffic light status
+note left of COM
+    - example trafficlight/status as topic
+end note
+
+== Power Management Functionality ==
+UPS --> UM : Power status (through RS485)
+UM --> COM : Power source change
+COM --> SW : MQTT payload notify outage
+note left of COM
+    - example ups/power as topic
+end note
+
+@enduml

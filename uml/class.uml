@@ -1,0 +1,105 @@
+@startuml
+
+class ConfigManager {
+    - std::string configFilePath
+    - std::map<std::string, int> gpioTypeMap
+    - std::vector<CameraConfig> cameraConfigs
+    - std::vector<AC_in_config> acConfigs
+    - std::vector<DC_in_config> dcConfigs
+    -- Methods --
+    + bool loadConfig()
+    + const std::vector<CameraConfig>& getCameraConfigs()
+    + GpioConfig getDemandGpioConfig(std::string ip, int detect_loop)
+    + GpioConfig getStatusGpioConfig(std::string ip)
+    + Demand getDemandCountConfig(std::string ip, int detect_loop)
+    + int getDemandHoldTime(int detect_loop)
+}
+
+class CameraManager {
+    - const ConfigManager& configManager
+    - ControlModule& controlModule
+    - std::vector<CameraStatus> cameraStatus
+    -- Methods --
+    + void loop(uint64_t now_ms)
+    + void checkDemand(const CameraConfig& camConfig)
+    + void checkHeartbeat(const CameraConfig& camConfig)
+    + void resetDemandStatus()
+}
+
+class ControlModule {
+    - int i2cFile
+    - int mcpAddress1
+    - int mcpAddress2
+    - int gpioFile
+    - ConfigManager configManager
+    - unsigned char portValue
+    -- Methods --
+    + void handleDemand(int demandId, int frameCount, int gpioType, int gpioPin)
+    + void resetDemand(int demandId)
+    + void handleHeartbeat(std::string ip, bool isAlive)
+    + void writeGPIO(const char* gpiochip, int line_offset, int value)
+    + bool readGPIO(const char* gpiochip, int line_offset)
+    + void writePort(unsigned char port, unsigned char value, unsigned char address)
+    + unsigned char readPort(unsigned char port, unsigned char address)
+    + void setPortDirection(int fd, unsigned char port, unsigned char direction, unsigned char address)
+}
+
+class CameraStatus {
+    + std::string ip
+    + bool isAlive
+    + int deadCount
+    + uint64_t lastHeartbeat
+    + std::vector<DemandStatus> demandStatus
+}
+
+class DemandStatus {
+    + int demandId
+    + bool isFound
+    + bool isHandled
+    + uint64_t lastHandledTime
+    + int previousCount
+}
+
+class CameraConfig {
+    + std::string ip_address
+    + int status_gpio_type
+    + int status_gpio_pin
+    + std::vector<Demand> demands
+}
+
+class AC_in_config {
+    + int phase
+    + int red_gpio_pin
+    + int green_gpio_pin
+}
+
+class DC_in_config {
+    + int push_button
+    + int gpio_pin
+}
+
+class GpioConfig {
+    + int gpio_type
+    + int gpio_pin
+}
+
+class Demand {
+    + int detect_loop
+    + int count_loop
+    + int gpio_type
+    + int gpio_pin
+    + int hold_time
+}
+
+ConfigManager --> CameraConfig : manages
+ConfigManager --> AC_in_config : manages
+ConfigManager --> DC_in_config : manages
+ConfigManager --> Demand : manages
+CameraManager --> ControlModule : uses
+CameraManager --> ConfigManager : uses
+ControlModule --> ConfigManager : uses
+CameraManager --> CameraStatus : tracks
+CameraStatus --> DemandStatus : tracks
+ControlModule --> GpioConfig : uses
+
+@enduml

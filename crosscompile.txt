@@ -1,0 +1,3 @@
+source /opt/st/myir-yf13x/4.0.4-snapshot/environment-setup-cortexa7t2hf-neon-vfpv4-ostl-linux-gnueabi
+
+$CXX src/main.cpp src/ACMonitor/ACMonitor.cpp src/CameraManager/CameraManager.cpp src/CommModule/CommModule.cpp src/ConfigManager/ConfigManager.cpp  src/ControlModule/ControlModule.cpp src/DCinput/DCinput.cpp libs/lvcomm/mongoose.c -I src/ACMonitor -I src/CameraManager -I src/CommModule -I src/ConfigManager -I src/ControlModule -I src/DCinput -I libs/lvcomm -I libs/rapidjson/include/ -o meow
